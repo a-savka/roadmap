@@ -189,7 +189,11 @@ const FormPage = () => {
             {isPending ? 'Сохранение...' : (isEditMode ? 'Обновить анкету' : 'Сохранить анкету')}
           </button>
           {isEditMode && (
-            <button type="button" className="btn btn-secondary w-100 mt-2">
+            <button
+              type="button"
+              className="btn btn-secondary w-100 mt-2"
+              onClick={() => navigate(`/form-details/${existingForm.id}`)}
+            >
               Просмотр анкеты
             </button>
           )}

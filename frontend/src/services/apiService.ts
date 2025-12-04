@@ -47,3 +47,19 @@ export const updateUserForm = (formId, formData) => {
     body: JSON.stringify(formData),
   });
 };
+
+export const validateForm = (formId) => apiFetch(`/forms/${formId}/validate`);
+
+// Form Steps API
+export const getFormSteps = (formId) => apiFetch(`/form-steps/${formId}`);
+
+export const updateFormStep = (stepData) => {
+    return apiFetch('/form-steps', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(stepData),
+    });
+};
+
