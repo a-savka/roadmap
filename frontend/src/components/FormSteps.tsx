@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getFormSteps, updateFormStep } from '../services/apiService';
 
-const FormSteps = ({ formId }) => {
+const FormSteps = ({ formId }: {formId: any}) => {
   const queryClient = useQueryClient();
 
   const { data: steps = [], isLoading, error } = useQuery({
@@ -21,7 +21,7 @@ const FormSteps = ({ formId }) => {
     },
   });
 
-  const handleCheckboxChange = (stepName, currentCompleted) => {
+  const handleCheckboxChange = (stepName: any, currentCompleted: any) => {
     updateStepMutation.mutate({
       formId: parseInt(formId, 10),
       stepName: stepName,
@@ -37,13 +37,13 @@ const FormSteps = ({ formId }) => {
     return <div className="alert alert-danger">Не удалось загрузить шаги: {error.message}</div>;
   }
 
-  const allStepsCompleted = steps.length > 0 && steps.every(step => step.completed === 1);
+  const allStepsCompleted = steps.length > 0 && steps.every((step: any) => step.completed === 1);
 
   return (
     <div className="mt-4">
-      <h4 className="mb-3">Дальнейшие шаги</h4>
+      <h5 className="mb-3">Дальнейшие шаги</h5>
       <div className="list-group">
-        {steps.map((formStep) => (
+        {steps.map((formStep: any) => (
           <label key={formStep.step.stepName} className="list-group-item d-flex align-items-center">
             <input
               className="form-check-input me-3"
