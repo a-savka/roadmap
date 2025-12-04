@@ -1,6 +1,7 @@
 package ru.savka.demo.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "form_steps")
@@ -14,7 +15,7 @@ public class FormStep {
     @JoinColumn(name = "form_id")
     private Form form;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("stepName")
     @JoinColumn(name = "step_name")
     private Step step;
@@ -31,6 +32,7 @@ public class FormStep {
         this.id = id;
     }
 
+    @JsonIgnore
     public Form getForm() {
         return form;
     }
