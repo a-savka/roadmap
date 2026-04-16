@@ -1,31 +1,15 @@
-package ru.savka.demo.entity;
+package ru.savka.demo.dto;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "steps")
-public class Step {
+public class StepDto {
 
-    @Id
     private String stepName;
-
     private String stepDescription;
-
     private int stepOrder;
-
     private boolean enabled;
-
     private Integer deadlineDays;
-
-    @OneToMany(mappedBy = "step", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<StepCondition> conditions = new ArrayList<>();
+    private List<StepConditionDto> conditions;
 
     public String getStepName() {
         return stepName;
@@ -67,21 +51,11 @@ public class Step {
         this.deadlineDays = deadlineDays;
     }
 
-    public List<StepCondition> getConditions() {
+    public List<StepConditionDto> getConditions() {
         return conditions;
     }
 
-    public void setConditions(List<StepCondition> conditions) {
+    public void setConditions(List<StepConditionDto> conditions) {
         this.conditions = conditions;
-    }
-
-    public void addCondition(StepCondition condition) {
-        conditions.add(condition);
-        condition.setStep(this);
-    }
-
-    public void removeCondition(StepCondition condition) {
-        conditions.remove(condition);
-        condition.setStep(null);
     }
 }

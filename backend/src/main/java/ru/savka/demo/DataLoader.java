@@ -73,10 +73,16 @@ public class DataLoader implements CommandLineRunner {
         Step photo = new Step();
         photo.setStepName("photo");
         photo.setStepDescription("Сделать фотографии");
+        photo.setStepOrder(1);
+        photo.setEnabled(true);
+        photo.setDeadlineDays(null);
 
         Step tax = new Step();
         tax.setStepName("tax");
         tax.setStepDescription("Подать заявление в налоговую");
+        tax.setStepOrder(2);
+        tax.setEnabled(true);
+        tax.setDeadlineDays(null);
 
         stepRepository.saveAll(Arrays.asList(photo, tax));
     }
