@@ -52,7 +52,8 @@ public class FormController {
         int overdueDays = validationService.calculateOverdueDays(form);
         boolean isOverdue = overdueDays > 0;
 
-        ValidationResultDto resultDto = new ValidationResultDto(isOverdue, overdueDays);
+        var applicableSteps = formService.getApplicableSteps(form);
+        ValidationResultDto resultDto = new ValidationResultDto(isOverdue, overdueDays, applicableSteps);
         return ResponseEntity.ok(resultDto);
     }
 }
