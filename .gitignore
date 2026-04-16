@@ -1,0 +1,5 @@
+*.md
+*.docx
+*.docx#
+*.drawio
+ext/
