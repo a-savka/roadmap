@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../store/userStore';
+import { useAppConfigContext } from '../context/AppConfigContext';
 import type { User } from '../types';
 
 const loginUser = async (userData: { username: string; password: string }): Promise<User> => {
@@ -41,6 +42,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
+  const { t } = useAppConfigContext();
 
   const mutation = useMutation({
     mutationFn: loginUser,
@@ -57,7 +59,7 @@ const LoginPage = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      setError('Имя пользователя и пароль обязательны.');
+      setError(t('login.validation.error'));
       return;
     }
     setError('');
@@ -67,10 +69,10 @@ const LoginPage = () => {
   return (
     <div className="d-flex justify-content-center align-items-center w-100">
       <div className="bg-light p-4 border rounded" style={{ width: '400px' }}>
-        <h2 className="text-center mb-4">Вход</h2>
+        <h2 className="text-center mb-4">{t('login.page.title')}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Имя пользователя</label>
+            <label className="form-label">{t('login.username.label')}</label>
             <input
               type="text"
               className="form-control"
@@ -79,7 +81,7 @@ const LoginPage = () => {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Пароль</label>
+            <label className="form-label">{t('login.password.label')}</label>
             <input
               type="password"
               className="form-control"
@@ -89,7 +91,7 @@ const LoginPage = () => {
           </div>
           {error && <div className="alert alert-danger">{error}</div>}
           <button type="submit" className="btn btn-primary w-100" disabled={mutation.isPending}>
-            {mutation.isPending ? 'Вход...' : 'Войти'}
+            {mutation.isPending ? t('login.button.pending') : t('login.button.text')}
           </button>
         </form>
       </div>

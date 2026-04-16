@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getFormSteps, updateFormStep } from '../services/apiService';
+import { useAppConfigContext } from '../context/AppConfigContext';
 import type { FormStep } from '../types';
 
 const FormSteps = ({ formId }: { formId: string | number }) => {
   const queryClient = useQueryClient();
+  const { t } = useAppConfigContext();
 
   const { data: steps = [], isLoading, error } = useQuery<FormStep[] | null>({
     queryKey: ['formSteps', formId],
@@ -13,11 +15,9 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
   const updateStepMutation = useMutation({
     mutationFn: updateFormStep,
     onSuccess: () => {
-      // Invalidate and refetch the steps query to get the updated list
       queryClient.invalidateQueries({ queryKey: ['formSteps', formId] });
     },
     onError: (error) => {
-      // It's good practice to handle errors, e.g., show a notification
       console.error('Failed to update step:', error);
     },
   });
@@ -35,18 +35,18 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
   }
 
   if (isLoading) {
-    return <div>Загрузка шагов...</div>;
+    return <div>{t('form.steps.loading')}</div>;
   }
 
   if (error) {
-    return <div className="alert alert-danger">Не удалось загрузить шаги: {error.message}</div>;
+    return <div className="alert alert-danger">{t('form.steps.error')}: {error.message}</div>;
   }
 
   const allStepsCompleted = steps.length > 0 && steps.every((step: FormStep) => step.completed === 1);
 
   return (
     <div className="mt-4">
-      <h5 className="mb-3">Дальнейшие шаги</h5>
+      <h5 className="mb-3">{t('form.steps.title')}</h5>
       <div className="list-group">
         {steps.map((formStep: FormStep) => (
           <label key={formStep.step.stepName} className="list-group-item d-flex align-items-center">
@@ -58,13 +58,14 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
               disabled={updateStepMutation.isPending}
             />
             {formStep.step.stepDescription}
+            {formStep.step.deadlineDays && ` (до ${formStep.step.deadlineDays} дней)`}
           </label>
         ))}
       </div>
 
       {allStepsCompleted && (
         <div className="alert alert-success mt-4">
-          Все предварительные условия выполнены. Вы можете приступить к подаче заявления.
+          {t('form.steps.all.completed.message')}
         </div>
       )}
     </div>
