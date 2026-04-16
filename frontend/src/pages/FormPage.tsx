@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useUserStore from '../store/userStore';
 import { getCountries, getUserForm, saveUserForm, updateUserForm } from '../services/apiService';
 import { useNavigate } from 'react-router-dom';
+import type { Country, Form } from '../types';
 
 const visitPurposeOptions = {
   work: 'Работа',
@@ -35,14 +37,14 @@ const FormPage = () => {
     }
   }, [user, navigate]);
 
-  const { data: countries = [] } = useQuery({
+  const { data: countries = [] } = useQuery<Country[] | null, Error>({
     queryKey: ['countries'],
     queryFn: getCountries,
   });
 
-  const { data: existingForm } = useQuery({
+  const { data: existingForm } = useQuery<Form | null, Error>({
     queryKey: ['form', user?.username],
-    queryFn: () => getUserForm(user.username),
+    queryFn: () => getUserForm(user!.username),
     enabled: !!user,
   });
 
@@ -61,36 +63,36 @@ const FormPage = () => {
   }, [existingForm]);
 
   const createMutation = useMutation({
-    mutationFn: saveUserForm,
+    mutationFn: (data: Record<string, unknown>) => saveUserForm(data),
     onSuccess: (data) => {
       console.log('Form saved successfully:', data);
       queryClient.invalidateQueries({ queryKey: ['form', user?.username] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       setError(error.message);
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: (vars) => updateUserForm(vars.formId, vars.formData),
+    mutationFn: (vars: { formId: number; formData: Record<string, unknown> }) => updateUserForm(vars.formId, vars.formData),
     onSuccess: (data) => {
       console.log('Form updated successfully:', data);
       queryClient.invalidateQueries({ queryKey: ['form', user?.username] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       setError(error.message);
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setError('');
-    const payload = { ...formData, username: user.username };
+    const payload = { ...formData, username: user!.username };
     if (isEditMode) {
       updateMutation.mutate({ formId: existingForm.id, formData: payload });
     } else {
@@ -131,7 +133,7 @@ const FormPage = () => {
               onChange={handleChange}
             >
               <option value="">Выберите страну</option>
-              {countries.map((country) => (
+              {(countries ?? []).map((country) => (
                 <option key={country.code} value={country.code}>
                   {country.name}
                 </option>

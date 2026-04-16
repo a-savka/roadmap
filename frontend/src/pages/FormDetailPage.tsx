@@ -2,13 +2,14 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { validateForm } from '../services/apiService';
 import FormSteps from '../components/FormSteps';
+import type { ValidationResult } from '../types';
 
 const FormDetailPage = () => {
   const { formId } = useParams();
 
-  const { data: validationData, isLoading, error } = useQuery({
+  const { data: validationData, isLoading, error } = useQuery<ValidationResult | null>({
     queryKey: ['formValidation', formId],
-    queryFn: () => validateForm(formId),
+    queryFn: () => validateForm(formId!),
     enabled: !!formId,
   });
 
@@ -36,7 +37,7 @@ const FormDetailPage = () => {
                 <p className="alert alert-success">
                     Условия для подачи заявления выполнены.
                 </p>
-                <FormSteps formId={formId} />
+                <FormSteps formId={formId!} />
               </div>
             )}
           </div>

@@ -1,20 +1,28 @@
 import { QueryClient } from '@tanstack/react-query';
+import type {
+  Country,
+  Form,
+  FormStep,
+  ValidationResult,
+  AppConfig,
+  AppMessage,
+  Step,
+  ValidationRule
+} from '../types';
 
 const API_BASE_URL = '/api';
 
 export const queryClient = new QueryClient();
 
-// Generic fetch function
-const apiFetch = async (url, options = {}) => {
+const apiFetch = async <T>(url: string, options?: RequestInit): Promise<T | null> => {
   const response = await fetch(`${API_BASE_URL}${url}`, options);
   if (!response.ok) {
     if (response.status === 404) {
-      return null; // Handle 404 gracefully, e.g., for forms not found
+      return null;
     }
     const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
     throw new Error(errorData.message || 'API request failed');
   }
-  // Handle responses with no content
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.indexOf('application/json') !== -1) {
     return response.json();
@@ -22,44 +30,50 @@ const apiFetch = async (url, options = {}) => {
   return null;
 };
 
-// Country API
-export const getCountries = () => apiFetch('/countries');
+export const getCountries = (): Promise<Country[] | null> => 
+  apiFetch<Country[]>('/countries');
 
-// Form API
-export const getUserForm = (username) => apiFetch(`/forms/${username}`);
+export const getUserForm = (username: string): Promise<Form | null> => 
+  apiFetch<Form>(`/forms/${username}`);
 
-export const saveUserForm = (formData) => {
-  return apiFetch('/forms', {
+export const saveUserForm = (formData: Record<string, unknown>): Promise<Form | null> => {
+  return apiFetch<Form>('/forms', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
   });
 };
 
-export const updateUserForm = (formId, formData) => {
-  return apiFetch(`/forms/${formId}`, {
+export const updateUserForm = (formId: number, formData: Record<string, unknown>): Promise<Form | null> => {
+  return apiFetch<Form>(`/forms/${formId}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(formData),
   });
 };
 
-export const validateForm = (formId) => apiFetch(`/forms/${formId}/validate`);
+export const validateForm = (formId: string | number): Promise<ValidationResult | null> => 
+  apiFetch<ValidationResult>(`/forms/${formId}/validate`);
 
-// Form Steps API
-export const getFormSteps = (formId) => apiFetch(`/form-steps/${formId}`);
+export const getFormSteps = (formId: string | number): Promise<FormStep[] | null> => 
+  apiFetch<FormStep[]>(`/form-steps/${formId}`);
 
-export const updateFormStep = (stepData) => {
-    return apiFetch('/form-steps', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(stepData),
-    });
+export const updateFormStep = (stepData: { formId: number; stepName: string; completed: number }): Promise<FormStep | null> => {
+  return apiFetch<FormStep>('/form-steps', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(stepData),
+  });
 };
 
+export const getSteps = (): Promise<Step[] | null> => 
+  apiFetch<Step[]>('/steps');
+
+export const getValidationRules = (): Promise<ValidationRule[] | null> => 
+  apiFetch<ValidationRule[]>('/validation-rules');
+
+export const getMessages = (): Promise<AppMessage[] | null> => 
+  apiFetch<AppMessage[]>('/messages');
+
+export const getFullConfig = (): Promise<AppConfig | null> => 
+  apiFetch<AppConfig>('/config');

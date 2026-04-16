@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../store/userStore';
+import type { User } from '../types';
 
-const loginUser = async (userData) => {
+const loginUser = async (userData: { username: string; password: string }): Promise<User> => {
   const response = await fetch('/api/users/login', {
     method: 'POST',
     headers: {
@@ -52,7 +54,7 @@ const LoginPage = () => {
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
       setError('Имя пользователя и пароль обязательны.');
