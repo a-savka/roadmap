@@ -42,13 +42,14 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
     return <div className="alert alert-danger">{t('form.steps.error')}: {error.message}</div>;
   }
 
-  const allStepsCompleted = steps.length > 0 && steps.every((step: FormStep) => step.completed === 1);
+  const sortedSteps = [...steps].sort((a, b) => a.step.stepOrder - b.step.stepOrder);
+  const allStepsCompleted = sortedSteps.length > 0 && sortedSteps.every((step: FormStep) => step.completed === 1);
 
   return (
     <div className="mt-4">
       <h5 className="mb-3">{t('form.steps.title')}</h5>
       <div className="list-group">
-        {steps.map((formStep: FormStep) => (
+        {sortedSteps.map((formStep: FormStep) => (
           <label key={formStep.step.stepName} className="list-group-item d-flex align-items-center">
             <input
               className="form-check-input me-3"
@@ -58,7 +59,9 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
               disabled={updateStepMutation.isPending}
             />
             {formStep.step.stepDescription}
-            {formStep.step.deadlineDays && ` (до ${formStep.step.deadlineDays} дней)`}
+            {formStep.step.deadlineDays && (
+              <span className="ms-2 text-muted">(до {formStep.step.deadlineDays} дней)</span>
+            )}
           </label>
         ))}
       </div>

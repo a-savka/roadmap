@@ -19,7 +19,7 @@ public class FormStepService {
     }
 
     public List<FormStep> getFormSteps(Long formId) {
-        return formStepRepository.findByForm_Id(formId);
+        return formStepRepository.findByForm_IdWithStepsSorted(formId);
     }
 
     public Optional<FormStep> updateStepStatus(FormStepDto dto) {
