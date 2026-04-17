@@ -27,6 +27,12 @@ public class AdminStepConditionService {
                 .toList();
     }
 
+    public List<StepConditionDto> getConditionsForStep(String stepName) {
+        return stepConditionRepository.findByStep_StepName(stepName).stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     @Transactional
     public Optional<StepConditionDto> createCondition(StepConditionDto dto) {
         return stepRepository.findById(dto.getStepName()).map(step -> {
