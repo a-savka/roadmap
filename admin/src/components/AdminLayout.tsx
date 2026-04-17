@@ -1,7 +1,12 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import useAdminStore from '../store/adminStore';
 
-const AdminLayout = () => {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   const user = useAdminStore((s) => s.isAuthenticated);
   const logout = useAdminStore((s) => s.logout);
   const navigate = useNavigate();
@@ -66,7 +71,7 @@ const AdminLayout = () => {
         </nav>
       </header>
       <main className="container d-flex flex-grow-1 py-4">
-        <Outlet />
+        {children}
       </main>
     </div>
   );
