@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { setAdminToken } from '../services/api';
 
 interface AdminState {
   isAuthenticated: boolean;
@@ -13,10 +14,20 @@ const useAdminStore = create<AdminState>()(
     (set) => ({
       isAuthenticated: false,
       token: null,
-      login: (token) => set({ isAuthenticated: true, token }),
-      logout: () => set({ isAuthenticated: false, token: null }),
+      login: (token) => {
+        setAdminToken(token);
+        set({ isAuthenticated: true, token });
+      },
+      logout: () => {
+        setAdminToken(null);
+        set({ isAuthenticated: false, token: null });
+      },
     }),
-    { name: 'admin-auth' }
+    { name: 'admin-auth', onRehydrateStorage: () => (state) => {
+      if (state?.token) {
+        setAdminToken(state.token);
+      }
+    } }
   )
 );
 

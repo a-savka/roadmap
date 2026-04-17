@@ -12,11 +12,24 @@ import type {
 
 const API_BASE = '/api';
 
+let adminToken: string | null = null;
+
+export const setAdminToken = (token: string | null) => {
+  adminToken = token;
+};
+
 const apiFetch = async <T>(url: string, options?: RequestInit): Promise<T | null> => {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (adminToken) {
+    headers['X-Admin-Token'] = adminToken;
+  }
+
   const response = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...headers,
       ...options?.headers,
     },
   });
