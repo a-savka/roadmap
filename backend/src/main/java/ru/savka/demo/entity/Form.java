@@ -1,5 +1,6 @@
 package ru.savka.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ public class Form {
 
     @OneToOne
     @JoinColumn(name = "username", referencedColumnName = "username")
+    @JsonBackReference
     private User user;
 
     private LocalDate entryDate;

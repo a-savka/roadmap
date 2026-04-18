@@ -1,7 +1,8 @@
 package ru.savka.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "form_steps")
@@ -18,6 +19,7 @@ public class FormStep {
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("stepName")
     @JoinColumn(name = "step_name")
+    @JsonManagedReference
     private Step step;
 
     private int completed; // 0 or 1
@@ -32,7 +34,7 @@ public class FormStep {
         this.id = id;
     }
 
-    @JsonIgnore
+    @JsonBackReference
     public Form getForm() {
         return form;
     }

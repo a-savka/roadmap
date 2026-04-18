@@ -60,7 +60,7 @@ const StepsListPage = () => {
                   to={`/steps/${step.stepName}/conditions`}
                   className="btn btn-sm btn-info me-2"
                 >
-                  Условия ({step.conditions?.length || 0})
+                  Условия
                 </Link>
               </td>
               <td>

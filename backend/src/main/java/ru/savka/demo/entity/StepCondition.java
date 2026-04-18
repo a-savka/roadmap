@@ -1,5 +1,6 @@
 package ru.savka.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class StepCondition {
 
     @ManyToOne
     @JoinColumn(name = "step_name")
+    @JsonBackReference
     private Step step;
 
     private String countryCode;
