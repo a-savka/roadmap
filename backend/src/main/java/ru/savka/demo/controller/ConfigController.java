@@ -7,7 +7,7 @@ import ru.savka.demo.dto.AppConfigDto;
 import ru.savka.demo.service.ConfigService;
 
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/api/config")
 public class ConfigController {
 
     private final ConfigService configService;

@@ -10,7 +10,7 @@ import ru.savka.demo.service.AppMessageService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/api/messages")
 public class AppMessageController {
 
     private final AppMessageService appMessageService;

@@ -10,7 +10,7 @@ import ru.savka.demo.service.StepService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/steps")
+@RequestMapping("/api/steps")
 public class StepController {
 
     private final StepService stepService;

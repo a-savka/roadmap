@@ -9,7 +9,7 @@ import ru.savka.demo.service.ValidationRuleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/validation-rules")
+@RequestMapping("/api/validation-rules")
 public class ValidationRuleController {
 
     private final ValidationRuleService validationRuleService;

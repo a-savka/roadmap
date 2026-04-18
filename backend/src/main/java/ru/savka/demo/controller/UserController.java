@@ -9,7 +9,7 @@ import ru.savka.demo.entity.User;
 import ru.savka.demo.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;

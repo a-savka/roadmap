@@ -11,7 +11,7 @@ import ru.savka.demo.service.ValidationService;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/forms")
+@RequestMapping("/api/forms")
 public class FormController {
 
     private final FormService formService;

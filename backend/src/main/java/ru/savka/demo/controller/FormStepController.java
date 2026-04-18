@@ -9,7 +9,7 @@ import ru.savka.demo.service.FormStepService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/form-steps")
+@RequestMapping("/api/form-steps")
 public class FormStepController {
 
     private final FormStepService formStepService;
