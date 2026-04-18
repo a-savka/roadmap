@@ -8,7 +8,7 @@ import ru.savka.demo.service.AdminValidationRuleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/validation-rules")
+@RequestMapping("/api/admin/validation-rules")
 public class AdminValidationRuleController {
 
     private final AdminValidationRuleService adminValidationRuleService;

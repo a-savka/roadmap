@@ -8,7 +8,7 @@ import ru.savka.demo.service.AdminAppMessageService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/messages")
+@RequestMapping("/api/admin/messages")
 public class AdminAppMessageController {
 
     private final AdminAppMessageService adminAppMessageService;

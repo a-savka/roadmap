@@ -8,7 +8,7 @@ import ru.savka.demo.service.AdminStepService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/steps")
+@RequestMapping("/api/admin/steps")
 public class AdminStepController {
 
     private final AdminStepService adminStepService;
