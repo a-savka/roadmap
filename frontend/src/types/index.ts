@@ -27,8 +27,15 @@ export interface Step {
 
 export interface FormStep {
   formId: number;
-  step: Step;
+  stepName: string;
   completed: number;
+  stepDescription: string;
+  stepOrder: number;
+  enabled: boolean;
+  deadlineDays: number | null;
+  deadlineDate: string | null;
+  overdue: boolean;
+  overdueDays: number;
 }
 
 export interface Form {

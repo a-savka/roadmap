@@ -98,7 +98,7 @@ const FormPage = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center w-100">
-      <div className="bg-light p-4 border rounded" style={{ width: '600px' }}>
+      <div className="bg-light p-4 border rounded" style={{ width: '800px' }}>
         <h2 className="text-center mb-4">{t('form.page.title')}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">

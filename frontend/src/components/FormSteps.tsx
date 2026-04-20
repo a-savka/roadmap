@@ -42,7 +42,7 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
     return <div className="alert alert-danger">{t('form.steps.error')}: {error.message}</div>;
   }
 
-  const sortedSteps = [...steps].sort((a, b) => a.step.stepOrder - b.step.stepOrder);
+  const sortedSteps = [...steps].sort((a, b) => a.stepOrder - b.stepOrder);
   const allStepsCompleted = sortedSteps.length > 0 && sortedSteps.every((step: FormStep) => step.completed === 1);
 
   return (
@@ -50,18 +50,27 @@ const FormSteps = ({ formId }: { formId: string | number }) => {
       <h5 className="mb-3">{t('form.steps.title')}</h5>
       <div className="list-group">
         {sortedSteps.map((formStep: FormStep) => (
-          <label key={formStep.step.stepName} className="list-group-item d-flex align-items-center">
+          <label
+            key={formStep.stepName}
+            className={`list-group-item d-flex align-items-center ${formStep.overdue ? 'bg-danger-subtle' : ''}`}
+          >
             <input
               className="form-check-input me-3"
               type="checkbox"
               checked={formStep.completed === 1}
-              onChange={() => handleCheckboxChange(formStep.step.stepName, formStep.completed)}
-              disabled={updateStepMutation.isPending}
+              onChange={() => handleCheckboxChange(formStep.stepName, formStep.completed)}
+              disabled={updateStepMutation.isPending || formStep.overdue}
             />
-            {formStep.step.stepDescription}
-            {formStep.step.deadlineDays && (
-              <span className="ms-2 text-muted">(до {formStep.step.deadlineDays} дней)</span>
-            )}
+            <span className={formStep.overdue ? 'text-danger fw-bold' : ''}>
+              {formStep.stepDescription}
+            </span>
+            {formStep.overdue ? (
+              <span className="ms-2 text-danger fw-bold">
+                (просрочено на {formStep.overdueDays} дн.)
+              </span>
+            ) : formStep.deadlineDate ? (
+              <span className="ms-2 text-muted">(до {new Date(formStep.deadlineDate).toLocaleDateString('ru-RU')})</span>
+            ) : null}
           </label>
         ))}
       </div>

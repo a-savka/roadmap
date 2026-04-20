@@ -27,7 +27,7 @@ const FormDetailPage = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center w-100">
-      <div className="bg-light p-4 border rounded" style={{ width: '600px' }}>
+      <div className="bg-light p-4 border rounded" style={{ width: '800px' }}>
         <h2 className="text-center mb-4">{t('form.detail.page.title')}</h2>
         {validationData && (
           <div>

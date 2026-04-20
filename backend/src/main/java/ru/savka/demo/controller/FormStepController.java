@@ -19,7 +19,7 @@ public class FormStepController {
     }
 
     @GetMapping("/{formId}")
-    public List<FormStep> getFormSteps(@PathVariable Long formId) {
+    public List<FormStepDto> getFormSteps(@PathVariable Long formId) {
         return formStepService.getFormSteps(formId);
     }
 
