@@ -39,8 +39,8 @@ const MessagesListPage = () => {
           <tr>
             <th>ID</th>
             <th>Ключ</th>
-            <th>Текст (RU)</th>
-            <th>Текст (EN)</th>
+            <th>Текст</th>
+            {/* <th>Текст (EN)</th> */}
             <th>Категория</th>
             <th>Действия</th>
           </tr>
@@ -51,7 +51,7 @@ const MessagesListPage = () => {
               <td>{msg.id}</td>
               <td>{msg.messageKey}</td>
               <td>{msg.messageText}</td>
-              <td>{msg.messageTextEn ?? '-'}</td>
+              {/* <td>{msg.messageTextEn ?? '-'}</td> */}
               <td>{msg.category ?? '-'}</td>
               <td>
                 <button

@@ -104,7 +104,7 @@ const StepConditionsPage = () => {
               />
             </div>
             <div className="col-md-3 mb-3">
-              <label className="form-label">Статус программы переселения</label>
+              <label className="form-label">Статус ПП</label>
               <input
                 type="text"
                 className="form-control"

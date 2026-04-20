@@ -72,7 +72,7 @@ const MessageFormPage = () => {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Текст (RU)</label>
+          <label className="form-label">Текст</label>
           <textarea
             className="form-control"
             value={formData.messageText}
@@ -80,7 +80,7 @@ const MessageFormPage = () => {
             required
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label className="form-label">Текст (EN)</label>
           <textarea
             className="form-control"
@@ -89,7 +89,7 @@ const MessageFormPage = () => {
               setFormData({ ...formData, messageTextEn: e.target.value || null })
             }
           />
-        </div>
+        </div> */}
         <div className="mb-3">
           <label className="form-label">Категория</label>
           <input
