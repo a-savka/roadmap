@@ -3,3 +3,4 @@
 *.docx#
 *.drawio
 ext/
+!README.md
