@@ -31,7 +31,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
           <div className="container-fluid">
-            <span className="navbar-brand mb-0 h1">ДK - Админ</span>
+            <Link to="/" className="navbar-brand mb-0 h1">ДK - Админ</Link>
             <div className="collapse navbar-collapse">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">

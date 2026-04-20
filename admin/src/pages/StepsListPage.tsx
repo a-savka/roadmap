@@ -60,7 +60,7 @@ const StepsListPage = () => {
                   to={`/steps/${step.stepName}/conditions`}
                   className="btn btn-sm btn-info me-2"
                 >
-                  Условия
+                  ☰
                 </Link>
               </td>
               <td>
@@ -68,13 +68,13 @@ const StepsListPage = () => {
                   className="btn btn-sm btn-primary me-2"
                   onClick={() => navigate(`/steps/${step.stepName}`)}
                 >
-                  Редактировать
+                  ✏️
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDelete(step.stepName)}
                 >
-                  Удалить
+                  🗑️
                 </button>
               </td>
             </tr>

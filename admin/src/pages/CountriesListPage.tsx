@@ -52,13 +52,13 @@ const CountriesListPage = () => {
                   className="btn btn-sm btn-primary me-2"
                   onClick={() => navigate(`/countries/${country.code}`)}
                 >
-                  Редактировать
+                  ✏️
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDelete(country.code)}
                 >
-                  Удалить
+                  🗑️
                 </button>
               </td>
             </tr>

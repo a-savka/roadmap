@@ -58,13 +58,13 @@ const MessagesListPage = () => {
                   className="btn btn-sm btn-primary me-2"
                   onClick={() => navigate(`/messages/${msg.id}`)}
                 >
-                  Редактировать
+                  ✏️
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDelete(msg.id)}
                 >
-                  Удалить
+                  🗑️
                 </button>
               </td>
             </tr>

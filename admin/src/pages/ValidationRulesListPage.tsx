@@ -60,13 +60,13 @@ const ValidationRulesListPage = () => {
                   className="btn btn-sm btn-primary me-2"
                   onClick={() => navigate(`/validation-rules/${rule.id}`)}
                 >
-                  Редактировать
+                  ✏️
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => handleDelete(rule.id)}
                 >
-                  Удалить
+                  🗑️
                 </button>
               </td>
             </tr>
