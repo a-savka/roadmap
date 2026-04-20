@@ -58,7 +58,7 @@ const ValidationRuleFormPage = () => {
   if (isEdit && isLoading) return <div>Загрузка...</div>;
 
   return (
-    <div>
+    <div className="form-page">
       <h2 className="mb-4">{isEdit ? 'Редактирование правила' : 'Создание правила'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
