@@ -1,79 +1,80 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getFormSteps, updateFormStep } from '../services/apiService';
+import { useState } from 'react';
 import { useAppConfigContext } from '../context/AppConfigContext';
-import type { FormStep } from '../types';
+import type { Step } from '../types';
 
-const FormSteps = ({ formId }: { formId: string | number }) => {
-  const queryClient = useQueryClient();
+const FormSteps = ({ steps, entryDate }: { steps: Step[]; entryDate?: string }) => {
   const { t } = useAppConfigContext();
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
 
-  const { data: steps = [], isLoading, error } = useQuery<FormStep[] | null>({
-    queryKey: ['formSteps', formId],
-    queryFn: () => getFormSteps(formId),
-  });
+  const sortedSteps = [...steps].sort((a, b) => a.stepOrder - b.stepOrder);
 
-  const updateStepMutation = useMutation({
-    mutationFn: updateFormStep,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['formSteps', formId] });
-    },
-    onError: (error) => {
-      console.error('Failed to update step:', error);
-    },
-  });
-
-  const handleCheckboxChange = (stepName: string, currentCompleted: number) => {
-    updateStepMutation.mutate({
-      formId: typeof formId === 'string' ? parseInt(formId, 10) : formId,
-      stepName: stepName,
-      completed: currentCompleted ? 0 : 1,
+  const handleCheckboxChange = (stepName: string) => {
+    setCompletedSteps((prev) => {
+      const next = new Set(prev);
+      if (next.has(stepName)) {
+        next.delete(stepName);
+      } else {
+        next.add(stepName);
+      }
+      return next;
     });
   };
 
-  if (!steps) {
-    return null;
-  }
+  const allStepsCompleted = sortedSteps.length > 0 && sortedSteps.every((step) => completedSteps.has(step.stepName));
 
-  if (isLoading) {
-    return <div>{t('form.steps.loading')}</div>;
-  }
+  const getDeadlineInfo = (step: Step) => {
+    const deadlineDays = step.deadlineDays;
+    if (!entryDate || !deadlineDays || deadlineDays <= 0) return null;
 
-  if (error) {
-    return <div className="alert alert-danger">{t('form.steps.error')}: {error.message}</div>;
-  }
+    const entry = new Date(entryDate);
+    const deadline = new Date(entry.getTime() + deadlineDays * 86400000);
+    const now = new Date();
+    const isOverdue = deadline < now;
+    const overdueDays = Math.floor((now.getTime() - deadline.getTime()) / 86400000);
 
-  const sortedSteps = [...steps].sort((a, b) => a.stepOrder - b.stepOrder);
-  const allStepsCompleted = sortedSteps.length > 0 && sortedSteps.every((step: FormStep) => step.completed === 1);
+    return { deadline, isOverdue, overdueDays };
+  };
 
   return (
     <div className="mt-4">
       <h5 className="mb-3">{t('form.steps.title')}</h5>
-      <div className="list-group">
-        {sortedSteps.map((formStep: FormStep) => (
-          <label
-            key={formStep.stepName}
-            className={`list-group-item d-flex align-items-center ${formStep.overdue ? 'bg-danger-subtle' : ''}`}
-          >
-            <input
-              className="form-check-input me-3"
-              type="checkbox"
-              checked={formStep.completed === 1}
-              onChange={() => handleCheckboxChange(formStep.stepName, formStep.completed)}
-              disabled={updateStepMutation.isPending || formStep.overdue}
-            />
-            <span className={formStep.overdue ? 'text-danger fw-bold' : ''}>
-              {formStep.stepDescription}
-            </span>
-            {formStep.overdue ? (
-              <span className="ms-2 text-danger fw-bold">
-                (просрочено на {formStep.overdueDays} дн.)
-              </span>
-            ) : formStep.deadlineDate ? (
-              <span className="ms-2 text-muted">(до {new Date(formStep.deadlineDate).toLocaleDateString('ru-RU')})</span>
-            ) : null}
-          </label>
-        ))}
-      </div>
+      {sortedSteps.length === 0 ? (
+        <p className="text-muted">{t('form.steps.loading')}</p>
+      ) : (
+        <div className="list-group">
+          {sortedSteps.map((step) => {
+            const deadlineInfo = getDeadlineInfo(step);
+            const isOverdue = deadlineInfo?.isOverdue ?? false;
+
+            return (
+              <label
+                key={step.stepName}
+                className={`list-group-item d-flex align-items-center ${isOverdue ? 'bg-danger-subtle' : ''}`}
+              >
+                <input
+                  className="form-check-input me-3"
+                  type="checkbox"
+                  checked={completedSteps.has(step.stepName)}
+                  onChange={() => handleCheckboxChange(step.stepName)}
+                  disabled={isOverdue}
+                />
+                <span className={isOverdue ? 'text-danger fw-bold' : ''}>
+                  {step.stepDescription}
+                </span>
+                {isOverdue ? (
+                  <span className="ms-2 text-danger fw-bold">
+                    (просрочено на {deadlineInfo!.overdueDays} дн.)
+                  </span>
+                ) : deadlineInfo ? (
+                  <span className="ms-2 text-muted">
+                    (до {deadlineInfo.deadline.toLocaleDateString('ru-RU')})
+                  </span>
+                ) : null}
+              </label>
+            );
+          })}
+        </div>
+      )}
 
       {allStepsCompleted && (
         <div className="alert alert-success mt-4">

@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { validateForm } from '../services/apiService';
+import { validateForm, getFormSteps } from '../services/apiService';
 import { useAppConfigContext } from '../context/AppConfigContext';
 import FormSteps from '../components/FormSteps';
-import type { ValidationResult } from '../types';
+import type { ValidationResult, Step } from '../types';
 
 const FormDetailPage = () => {
   const { formId } = useParams();
@@ -13,6 +13,12 @@ const FormDetailPage = () => {
     queryKey: ['formValidation', formId],
     queryFn: () => validateForm(formId!),
     enabled: !!formId,
+  });
+
+  const { data: steps = [] } = useQuery<Step[] | null>({
+    queryKey: ['formSteps', formId],
+    queryFn: () => getFormSteps(formId!),
+    enabled: !!formId && !validationData?.overdue,
   });
 
   if (isLoading) {
@@ -36,7 +42,7 @@ const FormDetailPage = () => {
             ) : (
               <div>
                 <p className="alert alert-success">{t('form.validation.ok.message')}</p>
-                <FormSteps formId={formId!} />
+                <FormSteps steps={steps ?? []} />
               </div>
             )}
           </div>

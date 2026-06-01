@@ -3,11 +3,13 @@ package ru.savka.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.savka.demo.dto.FormDto;
+import ru.savka.demo.dto.StepDto;
 import ru.savka.demo.dto.ValidationResultDto;
 import ru.savka.demo.entity.Form;
 import ru.savka.demo.service.FormService;
 import ru.savka.demo.service.ValidationService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -55,5 +57,12 @@ public class FormController {
         var applicableSteps = formService.getApplicableSteps(form);
         ValidationResultDto resultDto = new ValidationResultDto(isOverdue, overdueDays, applicableSteps);
         return ResponseEntity.ok(resultDto);
+    }
+
+    @GetMapping("/{formId}/steps")
+    public ResponseEntity<List<StepDto>> getFormSteps(@PathVariable Long formId) {
+        return formService.getFormById(formId)
+                .map(form -> ResponseEntity.ok(formService.getApplicableSteps(form)))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -2,11 +2,10 @@ import { QueryClient } from '@tanstack/react-query';
 import type {
   Country,
   Form,
-  FormStep,
+  Step,
   ValidationResult,
   AppConfig,
   AppMessage,
-  Step,
   ValidationRule
 } from '../types';
 
@@ -55,16 +54,8 @@ export const updateUserForm = (formId: number, formData: Record<string, unknown>
 export const validateForm = (formId: string | number): Promise<ValidationResult | null> => 
   apiFetch<ValidationResult>(`/forms/${formId}/validate`);
 
-export const getFormSteps = (formId: string | number): Promise<FormStep[] | null> => 
-  apiFetch<FormStep[]>(`/form-steps/${formId}`);
-
-export const updateFormStep = (stepData: { formId: number; stepName: string; completed: number }): Promise<FormStep | null> => {
-  return apiFetch<FormStep>('/form-steps', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(stepData),
-  });
-};
+export const getFormSteps = (formId: string | number): Promise<Step[] | null> => 
+  apiFetch<Step[]>(`/forms/${formId}/steps`);
 
 export const getSteps = (): Promise<Step[] | null> => 
   apiFetch<Step[]>('/steps');

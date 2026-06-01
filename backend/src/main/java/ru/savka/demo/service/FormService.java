@@ -5,12 +5,21 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.savka.demo.dto.FormDto;
 import ru.savka.demo.dto.StepConditionDto;
 import ru.savka.demo.dto.StepDto;
-import ru.savka.demo.entity.*;
+import ru.savka.demo.entity.Country;
+import ru.savka.demo.entity.Form;
+import ru.savka.demo.entity.Step;
+import ru.savka.demo.entity.StepCondition;
+import ru.savka.demo.entity.User;
 import ru.savka.demo.exception.UserNotFoundException;
-import ru.savka.demo.repository.*;
+import ru.savka.demo.repository.CountryRepository;
+import ru.savka.demo.repository.FormRepository;
+import ru.savka.demo.repository.StepRepository;
+import ru.savka.demo.repository.UserRepository;
+import ru.savka.demo.rule.FieldCondition;
+import ru.savka.demo.rule.RuleValidationService;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,18 +30,16 @@ public class FormService {
     private final UserRepository userRepository;
     private final CountryRepository countryRepository;
     private final StepRepository stepRepository;
-    private final StepConditionRepository stepConditionRepository;
-    private final FormStepRepository formStepRepository;
+    private final RuleValidationService ruleValidationService;
 
     public FormService(FormRepository formRepository, UserRepository userRepository, 
                       CountryRepository countryRepository, StepRepository stepRepository,
-                      StepConditionRepository stepConditionRepository, FormStepRepository formStepRepository) {
+                      RuleValidationService ruleValidationService) {
         this.formRepository = formRepository;
         this.userRepository = userRepository;
         this.countryRepository = countryRepository;
         this.stepRepository = stepRepository;
-        this.stepConditionRepository = stepConditionRepository;
-        this.formStepRepository = formStepRepository;
+        this.ruleValidationService = ruleValidationService;
     }
 
     public Optional<Form> getUserForm(String username) {
@@ -59,54 +66,31 @@ public class FormService {
         form.setRelocationProgramStatus(formDto.getRelocationProgramStatus());
         form.setHqsStatus(formDto.getHqsStatus());
 
-        Form savedForm = formRepository.save(form);
-
-        List<Step> allSteps = stepRepository.findAllByOrderByStepOrderAsc();
-        List<FormStep> formSteps = allSteps.stream()
-                .filter(step -> step.isEnabled() && isStepApplicable(step, form))
-                .map(step -> {
-                    FormStepId formStepId = new FormStepId();
-                    formStepId.setFormId(savedForm.getId());
-                    formStepId.setStepName(step.getStepName());
-
-                    FormStep formStep = new FormStep();
-                    formStep.setId(formStepId);
-                    formStep.setForm(savedForm);
-                    formStep.setStep(step);
-                    formStep.setCompleted(0);
-                    return formStep;
-                })
-                .toList();
-
-        formStepRepository.saveAll(formSteps);
-
-        return savedForm;
+        return formRepository.save(form);
     }
 
     private boolean isStepApplicable(Step step, Form form) {
         List<StepCondition> conditions = step.getConditions();
-        
         if (conditions.isEmpty()) {
             return true;
         }
-        
-        return conditions.stream().anyMatch(condition -> matchesCondition(condition, form));
-    }
 
-    private boolean matchesCondition(StepCondition condition, Form form) {
-        String countryCode = condition.getCountryCode();
-        String visitPurpose = condition.getVisitPurpose();
-        String relocationStatus = condition.getRelocationProgramStatus();
-        String hqsStatus = condition.getHqsStatus();
+        Map<String, String> context = Map.of(
+            "countryCode", form.getCitizenshipCountry().getCode(),
+            "visitPurpose", form.getVisitPurpose(),
+            "relocationProgramStatus", form.getRelocationProgramStatus(),
+            "hqsStatus", form.getHqsStatus()
+        );
 
-        return matchesField(countryCode, form.getCitizenshipCountry().getCode()) &&
-               matchesField(visitPurpose, form.getVisitPurpose()) &&
-               matchesField(relocationStatus, form.getRelocationProgramStatus()) &&
-               matchesField(hqsStatus, form.getHqsStatus());
-    }
-
-    private boolean matchesField(String conditionValue, String formValue) {
-        return conditionValue == null || "*".equals(conditionValue) || Objects.equals(conditionValue, formValue);
+        return conditions.stream().anyMatch(sc -> {
+            List<FieldCondition> fieldConditions = List.of(
+                new FieldCondition("countryCode", sc.getCountryCode()),
+                new FieldCondition("visitPurpose", sc.getVisitPurpose()),
+                new FieldCondition("relocationProgramStatus", sc.getRelocationProgramStatus()),
+                new FieldCondition("hqsStatus", sc.getHqsStatus())
+            );
+            return ruleValidationService.evaluate(fieldConditions, context);
+        });
     }
 
     @Transactional

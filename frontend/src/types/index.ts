@@ -25,19 +25,6 @@ export interface Step {
   conditions: StepCondition[];
 }
 
-export interface FormStep {
-  formId: number;
-  stepName: string;
-  completed: number;
-  stepDescription: string;
-  stepOrder: number;
-  enabled: boolean;
-  deadlineDays: number | null;
-  deadlineDate: string | null;
-  overdue: boolean;
-  overdueDays: number;
-}
-
 export interface Form {
   id: number;
   user: { username: string };
